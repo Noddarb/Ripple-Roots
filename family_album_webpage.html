@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Family Album</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+    }
+    header {
+      background: #222;
+      color: white;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1rem;
+      padding: 1rem;
+    }
+    .gallery-item {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+    .gallery-item:hover {
+      transform: scale(1.03);
+    }
+    .gallery-item img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .caption {
+      padding: 0.75rem 1rem;
+      text-align: center;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Our Family Album</h1>
+  </header>
+  <section class="gallery">
+    <!-- Add your images here -->
+    <div class="gallery-item">
+      <img src="photo1.jpg" alt="Family Photo 1" />
+      <div class="caption">A beautiful day together</div>
+    </div>
+    <div class="gallery-item">
+      <img src="photo2.jpg" alt="Family Photo 2" />
+      <div class="caption">Cherished moments</div>
+    </div>
+    <div class="gallery-item">
+      <img src="photo3.jpg" alt="Family Photo 3" />
+      <div class="caption">Fun times</div>
+    </div>
+  </section>
+  <script>
+    const correctPassword = "family123";
+
+    function checkPassword() {
+      const entered = document.getElementById('password-input').value;
+      if (entered === correctPassword) {
+        document.getElementById('password-screen').style.display = 'none';
+        document.getElementById('album').style.display = 'block';
+      } else {
+        document.getElementById('error').style.display = 'block';
+      }
+    }
+
+    let currentIndex = 0;
+    const items = document.querySelectorAll('.gallery-item');
+
+    function showSlide(index) {
+      items.forEach((item, i) => {
+        item.style.display = i === index ? 'block' : 'none';
+        item.style.opacity = i === index ? 1 : 0;
+        item.style.transition = 'opacity 1s';
+      });
+    }
+
+    function nextSlide() {
+      currentIndex = (currentIndex + 1) % items.length;
+      showSlide(currentIndex);
+
+    // Mute / Unmute button
+    const music = document.getElementById('bg-music');
+    const muteBtn = document.getElementById('mute-btn');
+    muteBtn.onclick = () => {
+      music.muted = !music.muted;
+      muteBtn.textContent = music.muted ? 'Unmute' : 'Mute';
+    };
+
+    // Fullscreen image view with animation and dark background
+    const overlay = document.createElement('div');
+    overlay.id = 'dark-overlay';
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.background = 'rgba(0,0,0,0)';
+    overlay.style.transition = 'background 0.4s ease';
+    overlay.style.zIndex = '998';
+    overlay.style.display = 'none';
+    document.body.appendChild(overlay);
+
+    items.forEach(item => {
+      const img = item.querySelector('img');
+
+      // Enter fullscreen with animations
+      img.onclick = () => {
+        overlay.style.display = 'block';
+        setTimeout(() => {
+          overlay.style.background = 'rgba(0,0,0,0.85)';
+        }, 10);
+
+        img.style.transition = 'transform 0.4s ease';
+        img.style.transform = 'scale(1.05)';
+
+        setTimeout(() => {
+          if (img.requestFullscreen) img.requestFullscreen();
+          else if (img.webkitRequestFullscreen) img.webkitRequestFullscreen();
+          img.style.transform = 'scale(1)';
+        }, 250);
+      };
+
+      // Exit fullscreen animation
+      document.addEventListener('fullscreenchange', () => {
+        if (!document.fullscreenElement) {
+          overlay.style.background = 'rgba(0,0,0,0)';
+          setTimeout(() => {
+            overlay.style.display = 'none';
+          }, 400);
+        }
+      });
+    });
+
+    showSlide(currentIndex);
+    }
+
+    showSlide(currentIndex);
+  </script>
+  <audio id="bg-music" autoplay loop>
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+  <button id="mute-btn" style="position:fixed;top:10px;right:10px;padding:10px;border:none;border-radius:5px;background:white;cursor:pointer;z-index:999;">Mute</button>
+
+  <section class="thumbnails" style="display:flex;overflow-x:auto;gap:10px;padding:10px;">
+    <!-- Auto-generated thumbnails -->
+  </section>
+
+  <script>
+    const correctPassword = "family123";
+
+    function checkPassword() {
+      const entered = document.getElementById('password-input').value;
+      if (entered === correctPassword) {
+        document.getElementById('password-screen').style.display = 'none';
+        document.getElementById('album').style.display = 'block';
+      } else {
+        document.getElementById('error').style.display = 'block';
+      }
+    }
+
+    let currentIndex = 0;
+    const items = document.querySelectorAll('.gallery-item');
+    const thumbnails = document.querySelector('.thumbnails');
+
+    // Auto-generate thumbnails
+    items.forEach((item, i) => {
+      const img = item.querySelector('img').cloneNode();
+      img.style.width = '60px';
+      img.style.height = '60px';
+      img.style.objectFit = 'cover';
+      img.style.cursor = 'pointer';
+      img.onclick = () => {
+        currentIndex = i;
+        showSlide(currentIndex);
+      };
+      thumbnails.appendChild(img);
+    });
+
+    function showSlide(index) {
+      items.forEach((item, i) => {
+        item.style.display = i === index ? 'block' : 'none';
+        item.style.opacity = i === index ? 1 : 0;
+        item.style.transition = 'opacity 1s';
+      });
+    }
+
+    function nextSlide() {
+      currentIndex = (currentIndex + 1) % items.length;
+      showSlide(currentIndex);
+    }
+
+    function prevSlide() {
+      currentIndex = (currentIndex - 1 + items.length) % items.length;
+      showSlide(currentIndex);
+    }
+
+    // Touch/Swipe support
+    let startX = 0;
+    document.addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+    });
+    document.addEventListener('touchend', (e) => {
+      let endX = e.changedTouches[0].clientX;
+      if (endX < startX) nextSlide();
+      if (endX > startX) prevSlide();
+    });
+
+    showSlide(currentIndex);
+  </script>
+</body>
+</html>
